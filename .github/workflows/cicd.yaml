@@ -25,11 +25,16 @@ jobs:
       with:
         arguments: clean bootJar
 
-      #Docker Hub 로그인
+    #Docker Hub 로그인
     - name: Login to DockerHub
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-
+    #이미지 업로드
+    - name: build and release
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_REPOSITORY }} .
+        docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}:latest ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
